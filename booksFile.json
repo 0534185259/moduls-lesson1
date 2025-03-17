@@ -1,0 +1,20 @@
+[
+  {
+    "id": 0,
+    "name": "lol",
+    "type": "drama",
+    "borrowed": "no"
+  },
+  {
+    "id": 1,
+    "name": "nana",
+    "type": "exciting",
+    "borrowed": "no"
+  },
+  {
+    "id": 2,
+    "name": "blu blu",
+    "type": "tension",
+    "borrowed": "no"
+  }
+]

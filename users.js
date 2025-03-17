@@ -1,3 +1,4 @@
+const  fs=require("fs")
 class User{
     id;
     name;
@@ -20,12 +21,25 @@ let users = [
     new User('tzipi', 'exciting', 'no'),
     new User('yael', 'tension', 'no')
 ]
-function print(...users) {
-    for (let i = 0; i < users.length; i++) {
+function print(/*...users*/) {
+    /*for (let i = 0; i < users.length; i++) {
         console.log(users[i].toString());
-    }
-}
+    }*/
+        const data = fs.readFileSync("usersFile.json", "utf8")
+        const users = JSON.parse(data);
+        console.log(users);
+        
+}    
+
 function borrow(id){
+    let users;
+    try {
+        const data = fs.readFileSync("usersFile.json", "utf8"); 
+        users=JSON.parse(data); 
+    } catch (error) {
+        console.error( error);
+        users= [];
+    }
     try{
         u=users.find(x=>x.id===id)
         if(u!=null)
@@ -38,7 +52,16 @@ function borrow(id){
     }
 
 }
-module.exports={User,borrowUser:borrow,printUser:print}
+function initUsers() {
+    try {
+        
+        fs.writeFileSync("usersFile.json", JSON.stringify(users, null, 2), "utf8");
+        console.log("create");
+    } catch (error) {
+        console.error("error:", error);
+    }
+}
+module.exports={User,borrowUser:borrow,printUser:print,initUsers}
 
 
 

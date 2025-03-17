@@ -1,0 +1,20 @@
+[
+  {
+    "id": 0,
+    "name": "noa",
+    "type": "drama",
+    "borrowed": "no"
+  },
+  {
+    "id": 1,
+    "name": "tzipi",
+    "type": "exciting",
+    "borrowed": "no"
+  },
+  {
+    "id": 2,
+    "name": "yael",
+    "type": "tension",
+    "borrowed": "no"
+  }
+]
