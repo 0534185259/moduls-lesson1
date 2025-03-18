@@ -1,4 +1,4 @@
-const {borrowBook,printBook,initBooks}=require('./books')
+const {borrowBook,printBook,initBooks,printCB}=require('./books')
 const {borrowUser,printUser, initUsers}=require('./users')
 
 /*const b=borrowBook(0)
@@ -35,7 +35,7 @@ else
        printUser();
    
        console.log("\nBooks:");
-       await printBook();
+        await printBook(printCB);
    
        
        const user = borrowUser(1); 

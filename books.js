@@ -23,12 +23,13 @@ let books = [
     new Book('lol', 'drama', 'no'),
     new Book('nana', 'exciting', 'no'),
     new Book('blu blu', 'tension', 'no')
-]
+]//סינכרוני
 // /*function print(...books) {
 //     for (let i = 0; i < books.length; i++) {
 //         console.log(books[i].toString());
 //     }
 // }*/
+//אסינכרוני
 // async function print()
 // {
 //     try {
@@ -55,81 +56,103 @@ let books = [
 //         console.log(error.message)
 //     }
 // }*/
-// async function borrow(id) 
-// {
-//     const data = await fs.readFile("booksFile.json", "utf8");
-//     const booksData = JSON.parse(data);
-//     const book = booksData.find(b => b.id === id);
-//     if(book)
-//         console.log(book);
-//     else{
-//         console.log("book not found");
+async function borrow(id) 
+{
+    const data = await fs.readFile("booksFile.json", "utf8");
+    const booksData = JSON.parse(data);
+    const book = booksData.find(b => b.id === id);
+    if(book)
+        console.log(book);
+    else{
+        console.log("book not found");
 
-//     }
+    }
 
 
-// }
-// async function initBooks() {
-
-//     try {
-
-//         await fs.writeFile("booksFile.json", JSON.stringify(books, null, 2), "utf8");
-//         console.log("create success");
-//     } catch (error) {
-//         console.error( error);
-//     }
-// }
-// print()
-// borrow(22)
-function initBooks() {
-    return new Promise((resolve, reject) => {
-        fs.writeFile("booksFile.json", JSON.stringify(books, null, 2), "utf8")
-            .then(() => {
-                console.log("Books file created successfully.");
-                resolve();
-            })
-            .catch((error) => {
-                console.error("Error initializing books:", error);
-                reject(error);
-            });
-    });
 }
+async function initBooks() {
 
-const print = async () => {
-    const data = fs.readFile("booksFile.json", "utf8")
     try {
 
-        const data = await fs.readFile("booksFile.json", "utf8");
-        const booksData = JSON.parse(data);
-        console.log(booksData);
-
+        await fs.writeFile("booksFile.json", JSON.stringify(books, null, 2), "utf8");
+        console.log("create success");
+    } catch (error) {
+        console.error( error);
     }
-    catch (error) {
-        console.log(error);
-    }
+}
+// print()
+// borrow(22)
+// function initBooks() {
+//     return new Promise((resolve, reject) => {
+//         fs.writeFile("booksFile.json", JSON.stringify(books, null, 2), "utf8")
+//             .then(() => {
+//                 console.log("Books file created successfully.");
+//                 resolve();
+//             })
+//             .catch((error) => {
+//                 console.error("Error initializing books:", error);
+//                 reject(error);
+//             });
+//     });
+// }
 
+// const print = async () => {
+//     const data = fs.readFile("booksFile.json", "utf8")
+//     try {
+
+//         const data = await fs.readFile("booksFile.json", "utf8");
+//         const booksData = JSON.parse(data);
+//         console.log(booksData);
+
+//     }
+//     catch (error) {
+//         console.log(error);
+//     }
+
+// }
+function print(cb) {
+    fs.readFile("booksFile.json", "utf8")
+        .then((data) => {
+            const booksData = JSON.parse(data);
+            cb(null, booksData); 
+        })
+        .catch((error) => {
+            cb(error, null); 
+        });
 }
 
-function borrow(id) {
-    return new Promise((resolve, reject) => {
-        fs.readFile("booksFile.json", "utf8")
-            .then((data) => {
-                const booksData = JSON.parse(data);
-                const book = booksData.find((b) => b.id === id);
-                if (book) {
-                    resolve(book);
-                    return book
-                } else {
-                    reject("Book not found");
-                }
-            })
-            .catch((error) => {
-                reject(error); // אם יש שגיאה בקוראת הקובץ
-            });
-    });
-  }
+function printCB(error, books) {
+    if (error) {
+        console.error("Error reading books:", error);
+    } else {
+        console.log("Books data:", books);
+    }
+}
+
+// קריאה לפונקציה עם callback
+print(printCB);
+
+
+// function borrow(id) {
+//     return new Promise((resolve, reject) => {
+//         fs.readFile("booksFile.json", "utf8")
+//             .then((data) => {
+//                 const booksData = JSON.parse(data);
+//                 const book = booksData.find((b) => b.id === id);
+//                 if (book) {
+//                     resolve(book);
+//                     return book
+//                 } else {
+//                     reject("Book not found");
+//                 }
+//             })
+//             .catch((error) => {
+//                 reject(error); 
+//             });
+//     });
+//   }
   
- module.exports={Book,borrowBook:borrow,printBook:print,initBooks}
+ module.exports={Book,borrowBook:borrow,printBook:print,initBooks,printCB}
 
 
 
