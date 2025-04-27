@@ -42,8 +42,8 @@ else
        if (user) {
            console.log("\nUser borrowed:", user);
        }
-   
-       const book = await borrowBook(1); 
+       await borrowBook(1,0)
+       const book = await borrowBook(1,1); 
        if (book) {
            console.log("\nBook borrowed:", book);
        }

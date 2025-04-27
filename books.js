@@ -1,5 +1,5 @@
  const  fs=require("fs").promises
-
+ const xlsx = require('xlsx');
 
 
 class Book {
@@ -23,7 +23,38 @@ let books = [
     new Book('lol', 'drama', 'no'),
     new Book('nana', 'exciting', 'no'),
     new Book('blu blu', 'tension', 'no')
-]//סינכרוני
+]
+
+
+
+async function saveBorrowedBooksToExcel(borrowedBooks) {
+    let wb;
+    let ws;
+
+    try {
+        wb = xlsx.readFile('borrowed_books.xlsx');
+        ws = wb.Sheets['Borrowed Books'];
+    } catch (error) {
+        wb = xlsx.utils.book_new();  
+        ws = xlsx.utils.json_to_sheet([]);
+        xlsx.utils.book_append_sheet(wb, ws, 'Borrowed Books');
+    }
+
+    const currentData = xlsx.utils.sheet_to_json(ws);
+    currentData.push(...borrowedBooks);  
+    
+    // עדכון הגיליון עם המידע החדש
+    const newWs = xlsx.utils.json_to_sheet(currentData);
+    wb.Sheets['Borrowed Books'] = newWs;
+
+    // שמירה לקובץ אקסל
+    await xlsx.writeFile(wb, 'borrowed_books.xlsx');
+    console.log('Excel file updated!');
+}
+
+
+
+//סינכרוני
 // /*function print(...books) {
 //     for (let i = 0; i < books.length; i++) {
 //         console.log(books[i].toString());
@@ -56,20 +87,28 @@ let books = [
 //         console.log(error.message)
 //     }
 // }*/
-async function borrow(id) 
-{
+async function borrow(id, userId) {
     const data = await fs.readFile("booksFile.json", "utf8");
     const booksData = JSON.parse(data);
     const book = booksData.find(b => b.id === id);
-    if(book)
-        console.log(book);
-    else{
-        console.log("book not found");
 
+    if (book) {
+        console.log(`Book borrowed: ${book.name}`);
+        
+        const borrowedBook = {
+            userId: userId,
+            bookId: book.id,
+            borrowDate: new Date().toISOString()
+        };
+
+        await saveBorrowedBooksToExcel([borrowedBook]);
+
+        await fs.writeFile("booksFile.json", JSON.stringify(booksData, null, 2), "utf8");
+    } else {
+        console.log("Book not found");
     }
-
-
 }
+
 async function initBooks() {
 
     try {
